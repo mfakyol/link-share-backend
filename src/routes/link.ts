@@ -1,9 +1,8 @@
-import bodyParser from "body-parser";
 import express from "express";
-import mongoose from "mongoose";
-import checkAuth from "../middlewares/checkAuth";
+import bodyParser from "body-parser";
 import LinkModel from "../models/link.model";
 import PageModel from "../models/page.model";
+import checkAuth from "../middlewares/checkAuth";
 
 export default function LinkRouter() {
   const jsonParser = bodyParser.json();
@@ -59,6 +58,8 @@ export default function LinkRouter() {
         if (!tempLink) return res.status(200).json({ status: false, message: "Link not found." });
         tempLink.title = link.title;
         tempLink.href = link.href;
+        tempLink.show = link.show;
+        tempLink.isValid = link.isValid;
 
         page.save();
 

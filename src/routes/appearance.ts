@@ -185,10 +185,10 @@ export default function AppearanceRouter() {
     });
 
     router.post("/backgroundType", checkAuth, jsonParser, async (req, res) => {
-      const { backgroundType } = req.body;
+      const { backgroundType, backgroundImage } = req.body;
 
       if (!backgroundType) {
-        res.statusMessage = "fontFamily required for the body.";
+        res.statusMessage = "backgroundType required for the body.";
         return res.status(400).end();
       }
 
@@ -198,6 +198,7 @@ export default function AppearanceRouter() {
         if (!page) return res.status(200).json({ status: false, message: "Page not found." });
 
         page.styles.backgroundType = backgroundType;
+        page.styles.backgroundImage = backgroundImage || "";
 
         await page.save();
 

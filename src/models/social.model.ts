@@ -2,18 +2,19 @@ import mongoose from "mongoose";
 
 const SocialSchema = new mongoose.Schema({
   type: {
-    type: Number,
-    required: true,
-  },
-  order: {
-    type: Number,
-    default: 0,
+    type: String,
     required: true,
   },
   href: {
     type: String,
     required: true,
   },
+
+  show: {
+    type: Boolean,
+    default: true,
+  },
+  
   createdAt: {
     type: Date,
     default: Date.now,

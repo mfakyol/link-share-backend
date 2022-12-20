@@ -6,6 +6,7 @@ import { slug } from "../lib/slug";
 import bodyParser from "body-parser";
 import PageModel from "../models/page.model";
 import UserModel from "../models/user.model";
+import LinkModel from "../models/link.model";
 import { validateEmail, validatePassword } from "../lib/validate";
 
 dotenv.config();
@@ -46,7 +47,26 @@ export default function SignupRouter() {
       let errorFlag = 0;
 
       try {
-        page = new PageModel({ endPoint });
+        const styles = {
+          backgroundColor: "#1b1b1b",
+          backgroundType: "flat",
+          fontColor: "#f0f0f0",
+          fontFamily: "Inter",
+          link: {
+            backgroundColor: "#353535",
+            color: "#f0f0f0",
+            shadowColor: "#d0d0d0",
+            style: "outlinerounded",
+          },
+        };
+        const link1 = new LinkModel({ title: "google", href: "https://www.google.com" });
+        const link2 = new LinkModel({ title: "yotube", href: "https://www.youtube.com" });
+
+        const links = [link1, link2];
+
+        const profileTitle = endPoint;
+
+        page = new PageModel({ endPoint, styles, links, profileTitle });
 
         await page.save();
 

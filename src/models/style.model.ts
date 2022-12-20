@@ -1,15 +1,22 @@
 import mongoose from "mongoose";
 
 const StyleSchema = new mongoose.Schema({
+  backgroundType: {
+    type: String,
+    default: "",
+  },
+
+
   backgroundColor: {
     type: String,
     default: "",
   },
 
-  backgroundType: {
+  backgroundImage: {
     type: String,
     default: "",
   },
+
 
   avatar: {
     type: String,
@@ -53,6 +60,18 @@ const StyleSchema = new mongoose.Schema({
     },
 
     shadowColor: {
+      type: String,
+      default: "",
+    },
+  },
+
+  social: {
+    theme: {
+      type: String,
+      default: "color",
+    },
+
+    position: {
       type: String,
       default: "",
     },

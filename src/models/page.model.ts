@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 import { LinkSchema } from "./link.model";
-import { SocialSchema } from "./social.model";
 import { StyleSchema } from "./style.model";
+import { SocialSchema } from "./social.model";
 
 const PageSchema = new mongoose.Schema({
   endPoint: {
@@ -49,16 +49,6 @@ const PageSchema = new mongoose.Schema({
   links: {
     type: [LinkSchema],
     default: [],
-  },
-
-  socialTheme: {
-    type: Number,
-    default: 1,
-  },
-
-  socialPosition: {
-    type: String,
-    default: "",
   },
 
   socials: {

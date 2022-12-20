@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 import express from "express";
 import AppRoutes from "./routes";
 import connectDB from "./lib/connectDB";
+import path from "path";
 
 connectDB();
 dotenv.config();
@@ -10,6 +11,7 @@ dotenv.config();
 const port = process.env.PORT || 3001;
 const app = express();
 app.use(cors());
+app.use(express.static(path.join(__dirname, "../", "public")))
 AppRoutes(app);
 
 app.get("/", (req, res) => {

@@ -10,9 +10,9 @@ const LinkSchema = new mongoose.Schema({
 
     default: "",
   },
-  hide: {
+  show: {
     type: Boolean,
-    default: false,
+    default: true,
   },
   isValid: {
     type: Boolean,
