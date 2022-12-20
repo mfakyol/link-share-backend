@@ -66,14 +66,14 @@ const StyleSchema = new mongoose.Schema({
   },
 
   social: {
-    theme: {
+    style: {
       type: String,
       default: "color",
     },
 
     position: {
       type: String,
-      default: "",
+      default: "top",
     },
   },
 });
