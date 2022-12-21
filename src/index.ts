@@ -6,7 +6,7 @@ import connectDB from "./lib/connectDB";
 import path from "path";
 
 connectDB();
-dotenv.config({ path: process.cwd() + '/env.local', override: true });
+dotenv.config({ path: process.cwd() + '/.env.local', override: true });
 
 const port = process.env.PORT || 3001;
 const app = express();
