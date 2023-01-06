@@ -11,14 +11,18 @@ export default function LinkRouter() {
     const router = express.Router();
 
     router.post("/reorder", checkAuth, jsonParser, async (req, res) => {
-      const { reorderedLinks } = req.body;
+      const { reorderedLinkIds } = req.body;
 
       try {
         const page = await PageModel.findById(req.authContext?.pageId);
 
         if (!page) return res.status(200).json({ status: false, message: "Page not found." });
 
-        page.links = reorderedLinks;
+        page.links = reorderedLinkIds.reduce((acc: any, linkId: any) => {
+          const link = page.links.find((l: any) => l._id.toString() == linkId)
+          if (link) acc.push(link)
+          return acc
+        }, [])
 
         await page.save();
 

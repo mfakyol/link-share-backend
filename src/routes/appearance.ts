@@ -2,12 +2,39 @@ import express from "express";
 import bodyParser from "body-parser";
 import PageModel from "../models/page.model";
 import checkAuth from "../middlewares/checkAuth";
+import multer from "multer";
+import fs from "fs";
+import { nanoid } from "nanoid";
+
+const AVATAR_MAX_FILE_SIZE_BYTE = 1024 * 1024;
+const upload = multer({
+  storage: multer.memoryStorage(),
+  limits: { fileSize: AVATAR_MAX_FILE_SIZE_BYTE },
+}).single("avatar");
+
+const avatarFileTypeWhiteList = ["image/png", "image/jpeg", "image/jpg", "image/webp"];
 
 const jsonParser = bodyParser.json();
 
 export default function AppearanceRouter() {
   const route = () => {
     const router = express.Router();
+
+    router.post("/avatar", async (req, res) => {
+      return upload(req, res, function (err) {
+        if (err?.code == "LIMIT_FILE_SIZE")
+          return res.send({ status: false, message: `Max file size must be ${AVATAR_MAX_FILE_SIZE_BYTE} byte.` });
+        else if (err) return res.send({ status: false, message: `Unknown error occured when upload file.` });
+
+        const file = req.file;
+        if (!file) return res.send({ status: false, message: "avatar file reqired." });
+        if (!avatarFileTypeWhiteList.some((type) => type == file.mimetype))
+          return res.send({ status: false, message: `${file?.mimetype} not supported.` });
+
+        fs.writeFile(`public/avatars/${nanoid()}.${file.mimetype.split("/").pop()}`, file.buffer, () => { });
+        res.send("ok");
+      });
+    });
 
     router.post("/title", checkAuth, jsonParser, async (req, res) => {
       const { title } = req.body;

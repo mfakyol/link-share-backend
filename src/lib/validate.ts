@@ -7,7 +7,7 @@ export const validateEmail = (email: string) => {
   return null;
 };
 
-const passwordRegex = /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,32}$/;
+const passwordRegex = /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-.,]).{8,32}$/;
 
 export const validatePassword = (password: string) => {
   if (!password) return "Please enter password.";
