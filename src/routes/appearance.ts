@@ -1,10 +1,10 @@
+import fs from "fs";
+import multer from "multer";
 import express from "express";
+import { nanoid } from "nanoid";
 import bodyParser from "body-parser";
 import PageModel from "../models/page.model";
 import checkAuth from "../middlewares/checkAuth";
-import multer from "multer";
-import fs from "fs";
-import { nanoid } from "nanoid";
 
 const AVATAR_MAX_FILE_SIZE_BYTE = 1024 * 1024;
 const upload = multer({
@@ -20,19 +20,42 @@ export default function AppearanceRouter() {
   const route = () => {
     const router = express.Router();
 
-    router.post("/avatar", async (req, res) => {
-      return upload(req, res, function (err) {
+    router.post("/avatar", checkAuth, async (req, res) => {
+      return await upload(req, res, async function (err) {
         if (err?.code == "LIMIT_FILE_SIZE")
           return res.send({ status: false, message: `Max file size must be ${AVATAR_MAX_FILE_SIZE_BYTE} byte.` });
-        else if (err) return res.send({ status: false, message: `Unknown error occured when upload file.` });
+        else if (err) {
+          res.statusMessage = "Unknown error occured when upload file.";
+          return res.status(500).end();
+        }
 
         const file = req.file;
         if (!file) return res.send({ status: false, message: "avatar file reqired." });
         if (!avatarFileTypeWhiteList.some((type) => type == file.mimetype))
           return res.send({ status: false, message: `${file?.mimetype} not supported.` });
 
-        fs.writeFile(`public/avatars/${nanoid()}.${file.mimetype.split("/").pop()}`, file.buffer, () => { });
-        res.send("ok");
+        const profileImage = `avatars/${nanoid()}.${file.mimetype.split("/").pop()}`;
+        const filePath = `public/${profileImage}`;
+        try {
+          fs.writeFileSync(filePath, file.buffer);
+        } catch (error) {
+          fs.unlinkSync(filePath);
+          res.statusMessage = "Unknown error occured when upload file.";
+          return res.status(500).end();
+        }
+
+        try {
+          const page = await PageModel.findById(req.authContext?.pageId);
+          if (!page) return res.status(200).json({ status: false, message: "Page not found." });
+
+          page.profileImage = profileImage;
+          await page.save();
+
+          return res.status(200).json({ status: true, profileImage });
+        } catch (error) {
+          res.statusMessage = "Unknown error occured.";
+          return res.status(500).end();
+        }
       });
     });
 
